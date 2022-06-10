@@ -1,0 +1,119 @@
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| psbd               |
+| taufiq             |
+| test               |
+| tubes_sem1         |
+| tubeskating        |
+| tubespwl           |
+| uassbd             |
++--------------------+
+11 rows in set (0.001 sec)
+
+MariaDB [(none)]> use uassbd;
+Database changed
+MariaDB [uassbd]> SELECT 
+    -> a.id, a.task_name, b.task_status, b.task_comments, d.category_name as 'Category',
+    -> DATEDIFF(a.task_duration_end, a.task_duration_start) as 'Lama Pengerjaan',
+    -> c.name as 'Create By', (SELECT name from users where users.id = task_dailies.user_verify_id ) as 'Verified By'
+    -> FROM task_plans a
+    -> RIGHT JOIN task_dailies b ON a.id = b.plan_id
+    -> INNER JOIN users c ON b.id = c.id
+    -> RIGHT JOIN task_categories d ON a.category_id = d.id
+    -> ;
+ERROR 1054 (42S22): Unknown column 'a.task_duration_start' in 'field list'
+MariaDB [uassbd]> SELECT 
+    -> a.id, a.task_name, b.task_status, b.task_comments, d.category_name as 'Category',
+    -> DATEDIFF(a.task_duration_end, a.ask_duration_start) as 'Lama Pengerjaan',
+    -> c.name as 'Create By', (SELECT name from users where users.id = task_dailies.user_verify_id ) as 'Verified By'
+    -> FROM task_plans a
+    -> RIGHT JOIN task_dailies b ON a.id = b.plan_id
+    -> INNER JOIN users c ON b.id = c.id
+    -> RIGHT JOIN task_categories d ON a.category_id = d.id;
+ERROR 1054 (42S22): Unknown column 'task_dailies.user_verify_id' in 'where clause'
+MariaDB [uassbd]> SELECT 
+    -> a.id, a.task_name, b.task_status, b.task_comments, d.category_name as 'Category',
+    -> DATEDIFF(a.task_duration_end, a.ask_duration_start) as 'Lama Pengerjaan',
+    -> c.name as 'Create By', (SELECT name from users where users.id = task_dailies.user_verify_id ) as 'Verified By',
+    -> FROM task_plans a
+    -> RIGHT JOIN task_dailies b ON a.id = b.plan_id
+    -> INNER JOIN users c ON b.id = c.id
+    -> RIGHT JOIN task_categories d ON a.category_id = d.id
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROM task_plans a
+RIGHT JOIN task_dailies b ON a.id = b.plan_id
+INNER JOIN us...' at line 5
+MariaDB [uassbd]> SELECT 
+    -> a.id, a.task_name, b.task_status, b.task_comments, d.category_name as 'Category',
+    -> DATEDIFF(a.task_duration_end, a.ask_duration_start) as 'Lama Pengerjaan',
+    -> c.name as 'Create By', (SELECT name from users where users.id = b.user_verify_id ) as 'Verified By'
+    -> FROM task_plans a
+    -> RIGHT JOIN task_dailies b ON a.id = b.plan_id
+    -> INNER JOIN users c ON b.user_id = c.id
+    -> RIGHT JOIN task_categories d ON a.category_id = d.id;
++------+-----------+-------------+---------------+--------------+-----------------+-----------+-------------+
+| id   | task_name | task_status | task_comments | Category     | Lama Pengerjaan | Create By | Verified By |
++------+-----------+-------------+---------------+--------------+-----------------+-----------+-------------+
+| NULL | NULL      | NULL        | NULL          | Analisis     |            NULL | NULL      | NULL        |
+| NULL | NULL      | NULL        | NULL          | Administrasi |            NULL | NULL      | NULL        |
+| NULL | NULL      | NULL        | NULL          | Teknikal     |            NULL | NULL      | NULL        |
++------+-----------+-------------+---------------+--------------+-----------------+-----------+-------------+
+3 rows in set (0.001 sec)
+
+MariaDB [uassbd]> CREATE VIEW NIM_211402131 AS
+    -> SELECT a.id as 'Task Id', a.task_name as 'Nama Task', a.task_status as 'Status', a.category_id as 'Kategori Indikator', b.category_name as 'Kategori', c.indicator_name as 'Indikator', a.user_create as 'Creator Id', d.name as 'Creator Name', a.task_priority as 'Prioritas'
+    -> FROM task_plans a
+    -> RIGHT JOIN task_categories b
+    -> ON a.category_id = b.id
+    -> RIGHT JOIN task_indicators c
+    -> ON a.category_id = c.id
+    -> RIGHT JOIN users d
+    -> ON a.user_create = d.id;
+Query OK, 0 rows affected (0.029 sec)
+
+
+MariaDB [uassbd]> show tables;
++------------------------+
+| Tables_in_uassbd       |
++------------------------+
+| failed_jobs            |
+| migrations             |
+| nim_211402131          |
+| password_resets        |
+| personal_access_tokens |
+| task_categories        |
+| task_dailies           |
+| task_indicators        |
+| task_persons           |
+| task_plans             |
+| users                  |
++------------------------+
+12 rows in set (0.001 sec)
+
+
+MariaDB [uassbd]> select*from nim_211402131;
++---------+-----------+--------+--------------------+----------+-----------+------------+--------------+-----------+
+| Task Id | Nama Task | Status | Kategori Indikator | Kategori | Indikator | Creator Id | Creator Name | Prioritas |
++---------+-----------+--------+--------------------+----------+-----------+------------+--------------+-----------+
+| NULL    | NULL      | NULL   | NULL               | NULL     | NULL      | NULL       | User B       |      NULL |
+| NULL    | NULL      | NULL   | NULL               | NULL     | NULL      | NULL       | User A       |      NULL |
++---------+-----------+--------+--------------------+----------+-----------+------------+--------------+-----------+
+2 rows in set (0.005 sec)
+
+MariaDB [uassbd]> select*from nim_211402131;
++---------+-----------+--------+--------------------+----------+-----------+------------+--------------+-----------+
+| Task Id | Nama Task | Status | Kategori Indikator | Kategori | Indikator | Creator Id | Creator Name | Prioritas |
++---------+-----------+--------+--------------------+----------+-----------+------------+--------------+-----------+
+| NULL    | NULL      | NULL   | NULL               | NULL     | NULL      | NULL       | User B       |      NULL |
+| NULL    | NULL      | NULL   | NULL               | NULL     | NULL      | NULL       | User A       |      NULL |
++---------+-----------+--------+--------------------+----------+-----------+------------+--------------+-----------+
+2 rows in set (0.001 sec)
+
+
+
